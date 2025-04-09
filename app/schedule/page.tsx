@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { scheduleSession, getUserProfile } from "../actions/scheduling-actions"
+import { useRouter } from "next/navigation"
 
 export default function SchedulePage() {
   const [step, setStep] = useState(1)
@@ -11,20 +11,19 @@ export default function SchedulePage() {
   const [topic, setTopic] = useState("Career Change")
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
-    async function loadUserProfile() {
-      try {
-        const profile = await getUserProfile()
-        setUser(profile)
-      } catch (error) {
-        console.error("Error loading user profile:", error)
-      } finally {
-        setLoading(false)
-      }
+    // Dummy user data in place of getUserProfile()
+    const dummyUser = {
+      full_name: "",
+      email: "",
+      phone_number: ""
     }
 
-    loadUserProfile()
+    setUser(dummyUser)
+    setLoading(false)
   }, [])
 
   function handleNextStep() {
@@ -34,6 +33,33 @@ export default function SchedulePage() {
     }
 
     setStep(2)
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const formData = new FormData(e.currentTarget)
+
+    const data = {
+      sessionDate: date,
+      sessionTime: time,
+      duration,
+      topic,
+      fullName: formData.get("fullName"),
+      email: formData.get("email"),
+      phoneNumber: formData.get("phoneNumber"),
+      additionalNotes: formData.get("additionalNotes")
+    }
+
+    // Simulate scheduling logic
+    console.log("Scheduled session data:", data)
+
+    // Navigate to homepage
+    setShowSuccessAlert(true) // ✅ Added
+    setTimeout(() => {
+      setShowSuccessAlert(false)
+      router.push("/") // ✅ Delayed navigation to show alert
+    }, 2500)
   }
 
   if (loading) {
@@ -46,6 +72,12 @@ export default function SchedulePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
+      {/* ✅ Success Alert */}
+      {showSuccessAlert && (
+        <div className="absolute top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg transition-all duration-300 z-50">
+          Meeting scheduled successfully! Check your mail.
+        </div>
+      )}
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
@@ -76,7 +108,7 @@ export default function SchedulePage() {
           <div className="ml-4 text-gray-600">{step === 1 ? "Select Time" : "Your Details"}</div>
         </div>
 
-        <form action={scheduleSession}>
+        <form onSubmit={handleSubmit}>
           <input type="hidden" name="sessionDate" value={date} />
           <input type="hidden" name="sessionTime" value={time} />
           <input type="hidden" name="duration" value={duration} />
@@ -222,7 +254,7 @@ export default function SchedulePage() {
                   type="submit"
                   className="bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                  Continue
+                  Schedule Now
                 </button>
               </div>
             </div>
