@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
@@ -18,7 +18,7 @@ export default function ResultsPage() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const encoded = searchParams.get("data") // ✅ Use correct query param
+    const encoded = searchParams.get("data")
     if (!encoded) {
       setLoading(false)
       return
@@ -27,8 +27,6 @@ export default function ResultsPage() {
     try {
       const decoded = decodeURIComponent(encoded)
       const parsed = JSON.parse(decoded)
-
-      // ✅ Use the top matching career path from the array
       const topMatch = parsed?.careerPaths?.[0] || null
       setRecommendation(topMatch)
     } catch (error) {
@@ -89,14 +87,13 @@ export default function ResultsPage() {
       </div>
 
       <div className="flex justify-end space-x-6 mt-4">
-      <Link href="/assessment" className="text-indigo-600 hover:underline text-sm">
-        Retake the assessment
-      </Link>
-      <Link href="/schedule" className="text-indigo-600 hover:underline text-sm">
-        Schedule an In-person Counsellor
-      </Link>
-    </div>
-
+        <Link href="/assessment" className="text-indigo-600 hover:underline text-sm">
+          Retake the assessment
+        </Link>
+        <Link href="/schedule" className="text-indigo-600 hover:underline text-sm">
+          Schedule an In-person Counsellor
+        </Link>
+      </div>
     </div>
   )
 }
