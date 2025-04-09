@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"  // To add animations
 
 export default function SchedulePage() {
   const [step, setStep] = useState(1)
@@ -55,10 +56,10 @@ export default function SchedulePage() {
     console.log("Scheduled session data:", data)
 
     // Navigate to homepage
-    setShowSuccessAlert(true) // ✅ Added
+    setShowSuccessAlert(true)
     setTimeout(() => {
       setShowSuccessAlert(false)
-      router.push("/") // ✅ Delayed navigation to show alert
+      router.push("/confirmation");
     }, 2500)
   }
 
@@ -71,18 +72,34 @@ export default function SchedulePage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      {/* ✅ Success Alert */}
+    <div className="max-w-3xl mx-auto p-6 relative">
+      {/* Success Alert */}
       {showSuccessAlert && (
-        <div className="absolute top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg transition-all duration-300 z-50">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg z-50"
+        >
           Meeting scheduled successfully! Check your mail.
-        </div>
+        </motion.div>
       )}
-      <div className="bg-white rounded-lg shadow-md p-8">
+
+      {/* Logo */}
+      <motion.img
+        src="LOGO.jpeg"
+        alt="Logo"
+        className="absolute top-4 right-4 w-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      />
+
+      <div className="bg-white rounded-lg shadow-md p-8 transition-all duration-500">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+          {/* <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
             <span className="text-xs">48 × 48</span>
-          </div>
+          </div> */}
           <div>
             <h1 className="text-2xl font-bold">Schedule Career Counselling Session</h1>
             <p className="text-gray-600">1-on-1 video call with our expert career counselor</p>
@@ -91,31 +108,32 @@ export default function SchedulePage() {
 
         <div className="flex items-center mb-8">
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step === 1 ? "bg-indigo-600 text-white" : "bg-indigo-100 text-indigo-600"
-            }`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${step === 1 ? "bg-indigo-600 text-white" : "bg-indigo-100 text-indigo-600"}`}
           >
             1
           </div>
           <div className="h-1 w-16 bg-gray-200 mx-2"></div>
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step === 2 ? "bg-indigo-600 text-white" : "bg-indigo-100 text-indigo-600"
-            }`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${step === 2 ? "bg-indigo-600 text-white" : "bg-indigo-100 text-indigo-600"}`}
           >
             2
           </div>
           <div className="ml-4 text-gray-600">{step === 1 ? "Select Time" : "Your Details"}</div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <input type="hidden" name="sessionDate" value={date} />
           <input type="hidden" name="sessionTime" value={time} />
           <input type="hidden" name="duration" value={duration} />
           <input type="hidden" name="topic" value={topic} />
 
           {step === 1 ? (
-            <div>
+            <div className="transition-all duration-500">
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label className="block text-gray-700 mb-2">Select Date</label>
@@ -123,7 +141,7 @@ export default function SchedulePage() {
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                     required
                   />
                 </div>
@@ -133,7 +151,7 @@ export default function SchedulePage() {
                   <select
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                     required
                   >
                     <option value="">Choose option...</option>
@@ -154,18 +172,14 @@ export default function SchedulePage() {
                   <button
                     type="button"
                     onClick={() => setDuration(30)}
-                    className={`py-2 px-6 rounded-md ${
-                      duration === 30 ? "bg-indigo-100 border border-indigo-300" : "bg-gray-100 border border-gray-300"
-                    }`}
+                    className={`py-2 px-6 rounded-md transition-all duration-300 ${duration === 30 ? "bg-indigo-100 border border-indigo-300" : "bg-gray-100 border border-gray-300"}`}
                   >
                     30 mins
                   </button>
                   <button
                     type="button"
                     onClick={() => setDuration(60)}
-                    className={`py-2 px-6 rounded-md ${
-                      duration === 60 ? "bg-indigo-100 border border-indigo-300" : "bg-gray-100 border border-gray-300"
-                    }`}
+                    className={`py-2 px-6 rounded-md transition-all duration-300 ${duration === 60 ? "bg-indigo-100 border border-indigo-300" : "bg-gray-100 border border-gray-300"}`}
                   >
                     60 mins
                   </button>
@@ -177,7 +191,7 @@ export default function SchedulePage() {
                 <select
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                 >
                   <option value="Career Change">Career Change</option>
                   <option value="Skill Development">Skill Development</option>
@@ -187,16 +201,17 @@ export default function SchedulePage() {
                 </select>
               </div>
 
-              <button
+              <motion.button
                 type="button"
                 onClick={handleNextStep}
-                className="bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
+                whileHover={{ scale: 1.05 }}
               >
                 Continue
-              </button>
+              </motion.button>
             </div>
           ) : (
-            <div>
+            <div className="transition-all duration-500">
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label className="block text-gray-700 mb-2">Full Name</label>
@@ -204,7 +219,7 @@ export default function SchedulePage() {
                     type="text"
                     name="fullName"
                     defaultValue={user?.full_name || ""}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                     required
                   />
                 </div>
@@ -215,7 +230,7 @@ export default function SchedulePage() {
                     type="email"
                     name="email"
                     defaultValue={user?.email || ""}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                     required
                   />
                 </div>
@@ -227,7 +242,7 @@ export default function SchedulePage() {
                   type="tel"
                   name="phoneNumber"
                   defaultValue={user?.phone_number || ""}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                   required
                 />
               </div>
@@ -237,29 +252,30 @@ export default function SchedulePage() {
                 <textarea
                   name="additionalNotes"
                   rows={4}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                 ></textarea>
               </div>
 
               <div className="flex gap-4">
-                <button
+                <motion.button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="border border-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  className="border border-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-300"
                 >
                   Back
-                </button>
+                </motion.button>
 
-                <button
+                <motion.button
                   type="submit"
-                  className="bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
+                  whileHover={{ scale: 1.05 }}
                 >
-                  Schedule Now
-                </button>
+                  Submit
+                </motion.button>
               </div>
             </div>
           )}
-        </form>
+        </motion.form>
       </div>
     </div>
   )

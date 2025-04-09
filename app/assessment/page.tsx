@@ -1,50 +1,43 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
+import { Rocket, Loader2 } from "lucide-react"
 
 const questions = [
-  { id: 1, text: "I enjoy solving coding problems and building software.", category: "programming" },
-  { id: 2, text: "I can visualize and design user interfaces effectively.", category: "design" },
-  { id: 3, text: "I like analyzing datasets and extracting patterns.", category: "data_science" },
-  { id: 4, text: "I enjoy assembling or working with circuits/hardware.", category: "electronics" },
-  { id: 5, text: "I can lead teams and delegate tasks efficiently.", category: "leadership" },
-  { id: 6, text: "I am good at explaining things in simple terms.", category: "communication" },
-  { id: 7, text: "I have an interest in finance and managing budgets.", category: "finance" },
-  { id: 8, text: "I am empathetic and understand others’ emotions easily.", category: "psychology" },
-  { id: 9, text: "I can make quick decisions in uncertain situations.", category: "decision_making" },
-  { id: 10, text: "I love exploring new technologies and trends.", category: "tech_trends" },
-  { id: 11, text: "I can think creatively and solve problems differently.", category: "creativity" },
-  { id: 12, text: "I can write well-structured and logical documents.", category: "writing" },
-  { id: 13, text: "I enjoy conducting experiments and documenting results.", category: "research" },
-  { id: 14, text: "I can manage multiple tasks and meet deadlines.", category: "productivity" },
-  { id: 15, text: "I like building machine learning models.", category: "ai_ml" },
-  { id: 16, text: "I am comfortable with mathematics and logic.", category: "math_logic" },
-  { id: 17, text: "I enjoy working independently without supervision.", category: "independence" },
-  { id: 18, text: "I prefer collaborating with a team over working alone.", category: "collaboration" },
-  { id: 19, text: "I love writing scripts or automating tasks.", category: "scripting" },
-  { id: 20, text: "I enjoy presenting ideas or giving talks.", category: "presentation" },
+  { id: 1, text: "I enjoy solving coding problems and building software.", category: "programming", icon: "💻" },
+  { id: 2, text: "I can visualize and design user interfaces effectively.", category: "design", icon: "🎨" },
+  { id: 3, text: "I like analyzing datasets and extracting patterns.", category: "data_science", icon: "📊" },
+  { id: 4, text: "I enjoy assembling or working with circuits/hardware.", category: "electronics", icon: "🔌" },
+  { id: 5, text: "I can lead teams and delegate tasks efficiently.", category: "leadership", icon: "🧑‍💼" },
+  { id: 6, text: "I am good at explaining things in simple terms.", category: "communication", icon: "🗣️" },
+  { id: 7, text: "I have an interest in finance and managing budgets.", category: "finance", icon: "💰" },
+  { id: 8, text: "I am empathetic and understand others’ emotions easily.", category: "psychology", icon: "🧠" },
+  { id: 9, text: "I can make quick decisions in uncertain situations.", category: "decision_making", icon: "⚖️" },
+  { id: 10, text: "I love exploring new technologies and trends.", category: "tech_trends", icon: "🚀" },
 ]
 
 export default function AssessmentPage() {
   const [isStarted, setIsStarted] = useState(false)
   const [responses, setResponses] = useState<Record<number, number>>({})
   const [loading, setLoading] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
   const router = useRouter()
 
   const handleChange = (qid: number, value: number) => {
     setResponses((prev) => ({ ...prev, [qid]: value }))
+    setTimeout(() => {
+      if (currentIndex < questions.length - 1) {
+        setCurrentIndex(currentIndex + 1)
+      }
+    }, 300)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    const incomplete = questions.some((q) => !responses[q.id])
-    if (incomplete) {
-      alert("Please answer all questions before submitting.")
-      return
-    }
 
     const answers = questions.map((q) => ({
       question: q.text,
@@ -62,7 +55,6 @@ export default function AssessmentPage() {
 
       const data = await res.json()
       router.push(`/results?data=${encodeURIComponent(JSON.stringify(data.results))}`)
-
     } catch (err) {
       console.error(err)
       alert("Something went wrong. Please try again later.")
@@ -76,36 +68,35 @@ export default function AssessmentPage() {
       <div className="max-w-4xl mx-auto p-6">
         <header className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center font-bold text-indigo-700">AI</div>
+            <Image src="/LOGO.jpeg" alt="Logo" width={48} height={48} className="rounded-full" />
             <div>
-              <h1 className="text-xl font-bold">AI Career Counselor</h1>
+              <h1 className="text-2xl font-bold">AI Career Counselor</h1>
               <p className="text-sm text-gray-600">Assessment Test</p>
             </div>
           </div>
           <Link href="/" className="text-indigo-600 hover:underline">Exit</Link>
         </header>
 
-        <div className="bg-white rounded-xl shadow-lg p-10">
-          <h2 className="text-3xl font-semibold mb-4">Start Your Assessment</h2>
-          <p className="text-gray-700 mb-6">Answer questions to discover careers aligned with your skills and interests.</p>
+        <div className="bg-white rounded-xl shadow-lg p-10 text-center">
+          <h2 className="text-3xl font-semibold mb-4">Start Your Career Journey</h2>
+          <p className="text-gray-700 mb-6 text-lg">Let’s find the career that suits you best! 🚀</p>
           <button
             onClick={() => setIsStarted(true)}
-            className="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition shadow"
+            className="bg-indigo-600 text-white px-8 py-3 rounded-full text-lg hover:bg-indigo-700 transition shadow"
           >
-            Begin
+            Begin Now
           </button>
         </div>
       </div>
     )
   }
 
-  return (
-    <div className="max-w-5xl mx-auto p-6">
-      <form onSubmit={handleSubmit}>
-        <h2 className="text-2xl font-bold mb-6">Assessment Questions</h2>
+  const currentQuestion = questions[currentIndex]
 
-        {/* Progress Bar */}
-        <div className="mb-6">
+  return (
+    <div className="max-w-3xl mx-auto p-6 relative">
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
           <div className="w-full bg-gray-200 h-2 rounded-full">
             <div
               className="bg-indigo-600 h-2 rounded-full transition-all"
@@ -117,45 +108,78 @@ export default function AssessmentPage() {
           </p>
         </div>
 
-        <div className="space-y-8">
-          {questions.map((q) => (
-            <div key={q.id} className="p-5 bg-white rounded-xl shadow-sm hover:shadow-md transition">
-              <h3 className="text-lg font-medium mb-3">Q{q.id}. {q.text}</h3>
-              <div className="grid grid-cols-5 gap-3">
-                {[1, 2, 3, 4, 5].map((val) => (
-                  <label key={val} className="cursor-pointer group">
-                    <input
-                      type="radio"
-                      name={`q-${q.id}`}
-                      value={val}
-                      onChange={() => handleChange(q.id, val)}
-                      className="hidden peer"
-                      required
-                      aria-label={`Question ${q.id} rating ${val}`}
-                    />
-                    <span className="block text-center py-2 rounded-md border peer-checked:bg-indigo-500 peer-checked:text-white peer-checked:border-indigo-600 transition hover:bg-gray-100">
-                      {val}
-                    </span>
-                  </label>
-                ))}
-              </div>
-              <div className="flex justify-between text-sm text-gray-400 mt-1">
-                <span>Disagree</span>
-                <span>Agree</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 text-right">
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-8 py-3 rounded-md hover:bg-green-700 transition shadow disabled:opacity-50"
-            disabled={loading}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentQuestion.id}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.4 }}
+            className="p-8 bg-white rounded-xl shadow-lg"
           >
-            {loading ? "Submitting..." : "Submit & Get Career Match"}
-          </button>
-        </div>
+            <div className="text-center">
+              <div className="text-5xl mb-2">{currentQuestion.icon}</div>
+              <h3 className="text-2xl font-semibold mb-3">
+                Q{currentQuestion.id}. {currentQuestion.text}
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Rate how much you agree with the above statement.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-5 gap-4">
+              {[1, 2, 3, 4, 5].map((val) => (
+                <label key={val} className="cursor-pointer group block text-center">
+                  <input
+                    type="radio"
+                    name={`q-${currentQuestion.id}`}
+                    value={val}
+                    onChange={() => handleChange(currentQuestion.id, val)}
+                    className="hidden peer"
+                    required
+                  />
+                  <div className="border p-4 rounded-lg peer-checked:bg-indigo-600 peer-checked:text-white transition-all hover:bg-gray-100 shadow-sm">
+                    <div className="text-xl font-bold">{val}</div>
+                    <div className="text-sm mt-1">
+                      {val === 1 ? "Strongly Disagree" :
+                        val === 2 ? "Disagree" :
+                        val === 3 ? "Neutral" :
+                        val === 4 ? "Agree" :
+                        "Strongly Agree"}
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {currentIndex === questions.length - 1 && responses[currentQuestion.id] && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="fixed bottom-6 right-6"
+          >
+            <button
+              type="submit"
+              className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition shadow-xl"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Rocket size={18} />
+                  Get Career Match
+                </>
+              )}
+            </button>
+          </motion.div>
+        )}
       </form>
     </div>
   )
