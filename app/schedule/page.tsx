@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { Linkedin } from "lucide-react";
 import { motion } from "framer-motion"  // To add animations
 
 export default function SchedulePage() {
   const [step, setStep] = useState(1)
   const [duration, setDuration] = useState<30 | 60>(30)
-  const [date, setDate] = useState("")
-  const [time, setTime] = useState("")
+  const [date, setDate] = useState<string>(""); // Empty string is a defined value
+  const [time, setTime] = useState<string>(""); // Empty string is a defined value
   const [topic, setTopic] = useState("Career Change")
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -139,7 +140,7 @@ export default function SchedulePage() {
                   <label className="block text-gray-700 mb-2">Select Date</label>
                   <input
                     type="date"
-                    value={date}
+                    value={date || ""}
                     onChange={(e) => setDate(e.target.value)}
                     className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
                     required
@@ -277,6 +278,29 @@ export default function SchedulePage() {
           )}
         </motion.form>
       </div>
+
+        {/* Footer */}
+        <footer className="mt-12 text-center text-sm text-gray-500 py-6 border-t">
+          <div className="mb-4">
+            <p>&copy; 2025 AI Career Counselor. All rights reserved.</p>
+            <p>Contact Us:</p>
+            <p>Name: AI Career Team</p>
+            <p>Phone: +91-9518081002</p>
+            <p>Email: <a href="mailto:contact@aicareer.com" className="text-indigo-600 hover:underline">contact@aicareer.com</a></p>
+          </div>
+          <div className="flex justify-center gap-6">
+            <a
+              href="https://www.linkedin.com/in/harish-aggarwal-407b5b239/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-indigo-600 hover:underline"
+            >
+              <Linkedin size={18} />
+              LinkedIn
+            </a>
+          </div>
+        </footer>
+
     </div>
   )
 }

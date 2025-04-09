@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { Linkedin } from "lucide-react";
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
@@ -63,9 +64,11 @@ export default function AssessmentPage() {
     }
   }
 
-  if (!isStarted) {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
+  const currentQuestion = questions[currentIndex]
+
+  return (
+    <div className="max-w-3xl mx-auto p-6 relative">
+      <form onSubmit={handleSubmit}>
         <header className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Image src="/LOGO.jpeg" alt="Logo" width={48} height={48} className="rounded-full" />
@@ -77,110 +80,129 @@ export default function AssessmentPage() {
           <Link href="/" className="text-indigo-600 hover:underline">Exit</Link>
         </header>
 
-        <div className="bg-white rounded-xl shadow-lg p-10 text-center">
-          <h2 className="text-3xl font-semibold mb-4">Start Your Career Journey</h2>
-          <p className="text-gray-700 mb-6 text-lg">Let’s find the career that suits you best! 🚀</p>
-          <button
-            onClick={() => setIsStarted(true)}
-            className="bg-indigo-600 text-white px-8 py-3 rounded-full text-lg hover:bg-indigo-700 transition shadow"
-          >
-            Begin Now
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  const currentQuestion = questions[currentIndex]
-
-  return (
-    <div className="max-w-3xl mx-auto p-6 relative">
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <div className="w-full bg-gray-200 h-2 rounded-full">
-            <div
-              className="bg-indigo-600 h-2 rounded-full transition-all"
-              style={{ width: `${(Object.keys(responses).length / questions.length) * 100}%` }}
-            />
-          </div>
-          <p className="text-right text-sm text-gray-500 mt-1">
-            {Object.keys(responses).length} of {questions.length} answered
-          </p>
-        </div>
-
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentQuestion.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.4 }}
-            className="p-8 bg-white rounded-xl shadow-lg"
-          >
-            <div className="text-center">
-              <div className="text-5xl mb-2">{currentQuestion.icon}</div>
-              <h3 className="text-2xl font-semibold mb-3">
-                Q{currentQuestion.id}. {currentQuestion.text}
-              </h3>
-              <p className="text-gray-500 mb-6">
-                Rate how much you agree with the above statement.
+        {isStarted ? (
+          <>
+            <div className="mb-4">
+              <div className="w-full bg-gray-200 h-2 rounded-full">
+                <div
+                  className="bg-indigo-600 h-2 rounded-full transition-all"
+                  style={{ width: `${(Object.keys(responses).length / questions.length) * 100}%` }}
+                />
+              </div>
+              <p className="text-right text-sm text-gray-500 mt-1">
+                {Object.keys(responses).length} of {questions.length} answered
               </p>
             </div>
 
-            <div className="grid grid-cols-5 gap-4">
-              {[1, 2, 3, 4, 5].map((val) => (
-                <label key={val} className="cursor-pointer group block text-center">
-                  <input
-                    type="radio"
-                    name={`q-${currentQuestion.id}`}
-                    value={val}
-                    onChange={() => handleChange(currentQuestion.id, val)}
-                    className="hidden peer"
-                    required
-                  />
-                  <div className="border p-4 rounded-lg peer-checked:bg-indigo-600 peer-checked:text-white transition-all hover:bg-gray-100 shadow-sm">
-                    <div className="text-xl font-bold">{val}</div>
-                    <div className="text-sm mt-1">
-                      {val === 1 ? "Strongly Disagree" :
-                        val === 2 ? "Disagree" :
-                        val === 3 ? "Neutral" :
-                        val === 4 ? "Agree" :
-                        "Strongly Agree"}
-                    </div>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentQuestion.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{ duration: 0.4 }}
+                className="p-8 bg-white rounded-xl shadow-lg"
+              >
+                <div className="text-center">
+                  <div className="text-5xl mb-2">{currentQuestion.icon}</div>
+                  <h3 className="text-2xl font-semibold mb-3">
+                    Q{currentQuestion.id}. {currentQuestion.text}
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    Rate how much you agree with the above statement.
+                  </p>
+                </div>
 
-        {currentIndex === questions.length - 1 && responses[currentQuestion.id] && (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="fixed bottom-6 right-6"
-          >
+                <div className="grid grid-cols-5 gap-4">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <label key={val} className="cursor-pointer group block text-center">
+                      <input
+                        type="radio"
+                        name={`q-${currentQuestion.id}`}
+                        value={val}
+                        onChange={() => handleChange(currentQuestion.id, val)}
+                        className="hidden peer"
+                        required
+                      />
+                      <div className="border p-4 rounded-lg peer-checked:bg-indigo-600 peer-checked:text-white transition-all hover:bg-gray-100 shadow-sm">
+                        <div className="text-xl font-bold">{val}</div>
+                        <div className="text-sm mt-1">
+                          {val === 1 ? "Strongly Disagree" :
+                            val === 2 ? "Disagree" :
+                            val === 3 ? "Neutral" :
+                            val === 4 ? "Agree" :
+                            "Strongly Agree"}
+                        </div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {currentIndex === questions.length - 1 && responses[currentQuestion.id] && (
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="fixed bottom-6 right-6"
+              >
+                <button
+                  type="submit"
+                  className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition shadow-xl"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <Rocket size={18} />
+                      Get Career Match
+                    </>
+                  )}
+                </button>
+              </motion.div>
+            )}
+          </>
+        ) : (
+          <div className="bg-white rounded-xl shadow-lg p-10 text-center">
+            <h2 className="text-3xl font-semibold mb-4">Start Your Career Journey</h2>
+            <p className="text-gray-700 mb-6 text-lg">Let’s find the career that suits you best! 🚀</p>
             <button
-              type="submit"
-              className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition shadow-xl"
-              disabled={loading}
+              onClick={() => setIsStarted(true)}
+              className="bg-indigo-600 text-white px-8 py-3 rounded-full text-lg hover:bg-indigo-700 transition shadow"
             >
-              {loading ? (
-                <>
-                  <Loader2 className="animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                <>
-                  <Rocket size={18} />
-                  Get Career Match
-                </>
-              )}
+              Begin Now
             </button>
-          </motion.div>
+          </div>
         )}
       </form>
+
+      {/* Footer */}
+      <footer className="mt-12 text-center text-sm text-gray-500 py-6 border-t">
+        <div className="mb-4">
+          <p>&copy; 2025 AI Career Counselor. All rights reserved.</p>
+          <p>Contact Us:</p>
+          <p>Name: AI Career Team</p>
+          <p>Phone: +91-9518081002</p>
+          <p>Email: <a href="mailto:contact@aicareer.com" className="text-indigo-600 hover:underline">contact@aicareer.com</a></p>
+        </div>
+        <div className="flex justify-center gap-6">
+          <a
+            href="https://www.linkedin.com/in/harish-aggarwal-407b5b239/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-indigo-600 hover:underline"
+          >
+            <Linkedin size={18} />
+            LinkedIn
+          </a>
+        </div>
+      </footer>
+
     </div>
   )
 }

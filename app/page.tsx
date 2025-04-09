@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { Linkedin } from "lucide-react";
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getUserSession } from "@/lib/auth"
@@ -65,6 +66,29 @@ export default async function HomePage() {
           Begin Assessment
         </Link>
       </div>
+
+        {/* Footer */}
+        <footer className="mt-12 text-center text-sm text-gray-500 py-6 border-t">
+          <div className="mb-4">
+            <p>&copy; 2025 AI Career Counselor. All rights reserved.</p>
+            <p>Contact Us:</p>
+            <p>Name: AI Career Team</p>
+            <p>Phone: +91-9518081002</p>
+            <p>Email: <a href="mailto:contact@aicareer.com" className="text-indigo-600 hover:underline">contact@aicareer.com</a></p>
+          </div>
+          <div className="flex justify-center gap-6">
+            <a
+              href="https://www.linkedin.com/in/harish-aggarwal-407b5b239/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-indigo-600 hover:underline"
+            >
+              <Linkedin size={18} />
+              LinkedIn
+            </a>
+          </div>
+        </footer>
+
     </div>
   )
 }
