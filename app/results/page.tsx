@@ -1,6 +1,6 @@
 // app/results/page.tsx
 import { Suspense } from "react"
-import ResultsPage from "./ResultsPage" // assuming your code is in ResultsPage.tsx
+import ResultsPage from "./Resultspage" // assuming your code is in ResultsPage.tsx
 
 export default function Results() {
   return (
