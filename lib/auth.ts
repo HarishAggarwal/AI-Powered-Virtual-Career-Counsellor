@@ -54,5 +54,6 @@ export async function getUserSession() {
 
 
 export async function clearUserSession() {
-  cookies().delete("userId")
+  const cookieStore = cookies(); // now used correctly
+  cookieStore.delete('userId');
 }
